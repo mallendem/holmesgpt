@@ -14,14 +14,17 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    ClassVar,
     Dict,
     List,
     Optional,
     OrderedDict,
     Tuple,
+    Type,
     Union,
 )
 
+from holmes.utils.pydantic_utils import build_config_example
 from jinja2 import Template
 from pydantic import (
     BaseModel,
@@ -88,7 +91,7 @@ class StructuredToolResult(BaseModel):
     invocation: Optional[str] = None
     params: Optional[Dict] = None
     icon_url: Optional[str] = None
-
+    
     def get_stringified_data(self) -> str:
         if self.data is None:
             return ""
@@ -595,6 +598,7 @@ class ToolsetEnvironmentPrerequisite(BaseModel):
 class Toolset(BaseModel):
     model_config = ConfigDict(extra="forbid")
     experimental: bool = False
+    config_classes: ClassVar[List[Type[BaseModel]]] = []
 
     enabled: bool = False
     name: str
@@ -828,9 +832,32 @@ class Toolset(BaseModel):
         if not silent:
             logger.info(f"✅ Toolset {self.name}")
 
-    @abstractmethod
-    def get_example_config(self) -> Dict[str, Any]:
-        return {}
+
+    def get_config_example(self) -> Optional[Dict[str, Any]]:
+        """Returns a JSON-serializable example object for the toolset's configuration.
+
+        Returns the example of the first config class (if any), otherwise returns None.
+        """
+        if self.config_classes:
+            return build_config_example(self.config_classes[0])
+        return None
+        
+
+    def get_config_schema(self) -> Optional[Dict[str, Any]]:
+        """Returns JSON Schema for the toolset's configuration.
+
+        Returns a dict of { config_class_name: model_json_schema } (if any), otherwise returns None.
+        """
+        if self.config_classes:
+            return {
+                "name": self.name,
+                "description": self.description,
+                "examples": self.get_config_example(),
+                "config_schema": {
+                config_cls.__name__: config_cls.model_json_schema()
+                for config_cls in self.config_classes
+            }}
+        return None
 
     def _load_llm_instructions(self, jinja_template: str):
         tool_names = [t.name for t in self.tools]
@@ -857,9 +884,6 @@ class YAMLToolset(Toolset):
         super().__init__(**kwargs)
         if self.llm_instructions:
             self._load_llm_instructions(self.llm_instructions)
-
-    def get_example_config(self) -> Dict[str, Any]:
-        return {}
 
 
 class ToolsetYamlFromConfig(Toolset):
@@ -893,9 +917,6 @@ class ToolsetYamlFromConfig(Toolset):
 
     restricted_tools: List[str] = Field(default_factory=list)
     approval_required_tools: List[str] = Field(default_factory=list)
-
-    def get_example_config(self) -> Dict[str, Any]:
-        return {}
 
 
 class ToolsetDBModel(BaseModel):

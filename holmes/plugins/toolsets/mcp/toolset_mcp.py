@@ -4,7 +4,7 @@ import logging
 import threading
 from contextlib import asynccontextmanager
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, Union
 
 import httpx
 from mcp.client.session import ClientSession
@@ -70,20 +70,50 @@ class MCPMode(str, Enum):
 
 
 class MCPConfig(BaseModel):
-    url: AnyUrl
-    mode: MCPMode = MCPMode.SSE
-    headers: Optional[Dict[str, str]] = None
-    verify_ssl: bool = True
+    url: AnyUrl = Field(
+        description="MCP server URL (for SSE or Streamable HTTP modes).",
+        examples=["http://example.com:8000/mcp/messages"],
+    )
+    mode: MCPMode = Field(
+        default=MCPMode.SSE,
+        description="Connection mode to use when talking to the MCP server.",
+        examples=[MCPMode.STREAMABLE_HTTP],
+    )
+    headers: Optional[Dict[str, str]] = Field(
+        default=None,
+        description="Optional HTTP headers to include in requests (e.g., Authorization).",
+        examples=[{"Authorization": "Bearer YOUR_TOKEN"}],
+    )
+    verify_ssl: bool = Field(
+        default=True,
+        description="Whether to verify SSL certificates (set to false for local/dev servers without valid SSL).",
+        examples=[False],
+    )
 
     def get_lock_string(self) -> str:
         return str(self.url)
 
 
 class StdioMCPConfig(BaseModel):
-    mode: MCPMode = MCPMode.STDIO
-    command: str
-    args: Optional[List[str]] = None
-    env: Optional[Dict[str, str]] = None
+    mode: MCPMode = Field(
+        default=MCPMode.STDIO,
+        description="Stdio mode runs an MCP server as a local subprocess.",
+        examples=[MCPMode.STDIO],
+    )
+    command: str = Field(
+        description="The command to start the MCP server (e.g., npx, uv, python).",
+        examples=["npx"],
+    )
+    args: Optional[List[str]] = Field(
+        default=None,
+        description="Arguments to pass to the MCP server command.",
+        examples=[["-y", "@modelcontextprotocol/server-github"]],
+    )
+    env: Optional[Dict[str, str]] = Field(
+        default=None,
+        description="Environment variables to set for the MCP server process.",
+        examples=[{"GITHUB_PERSONAL_ACCESS_TOKEN": "{{ env.GITHUB_TOKEN }}"}],
+    )
 
     def get_lock_string(self) -> str:
         return str(self.command)
@@ -236,6 +266,10 @@ class RemoteMCPTool(Tool):
 
 
 class RemoteMCPToolset(Toolset):
+    config_classes: ClassVar[list[Type[Union[MCPConfig, StdioMCPConfig]]]] = [
+        MCPConfig,
+        StdioMCPConfig,
+    ]
     tools: List[RemoteMCPTool] = Field(default_factory=list)  # type: ignore
     icon_url: str = "https://registry.npmmirror.com/@lobehub/icons-static-png/1.46.0/files/light/mcp.png"
     _mcp_config: Optional[Union[MCPConfig, StdioMCPConfig]] = None
@@ -321,12 +355,3 @@ class RemoteMCPToolset(Toolset):
     async def _get_server_tools(self):
         async with get_initialized_mcp_session(self) as session:
             return await session.list_tools()
-
-    def get_example_config(self) -> Dict[str, Any]:
-        example_config = MCPConfig(
-            url=AnyUrl("http://example.com:8000/mcp/messages"),
-            mode=MCPMode.STREAMABLE_HTTP,
-            headers={"Authorization": "Bearer YOUR_TOKEN"},
-            verify_ssl=False,  # Set to False for local/development servers without SSL
-        )
-        return example_config.model_dump()
