@@ -252,8 +252,8 @@ class ToolCallingLLM:
         for toolset in self.tool_executor.enabled_toolsets:
             if toolset.name == "bash":
                 config = toolset.config
-                if config and hasattr(config, "include_default_allow_deny_list"):
-                    return config.include_default_allow_deny_list
+                if config:
+                    return config.builtin_allowlist != "none"
                 return False
         return False
 
