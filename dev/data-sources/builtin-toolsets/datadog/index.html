@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://holmesgpt.dev/dev/data-sources/builtin-toolsets/datadog/">
       
       
-        <link rel="prev" href="../coralogix-logs/">
+        <link rel="prev" href="../crossplane/">
       
       
         <link rel="next" href="../docker/">
@@ -1303,14 +1303,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../ai-providers/azure-openai/" class="md-nav__link">
+      <a href="../../../ai-providers/azure-ai-foundry/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Azure OpenAI
+    Azure AI Foundry
   
 
     
@@ -1640,6 +1640,8 @@
       
         
       
+        
+      
     
     
     
@@ -1730,6 +1732,8 @@
       
         
           
+        
+      
         
       
         
@@ -2234,6 +2238,34 @@
     
   
     Coralogix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossplane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crossplane
   
 
     
@@ -3607,6 +3639,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../oauth-mcp-servers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAuth MCP Servers (Alpha)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../header-propagation/" class="md-nav__link">
         
   
@@ -3814,6 +3874,8 @@
       
         
       
+        
+      
     
     
     
@@ -3861,6 +3923,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/evaluations/history/results_20260419_044450/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ⚡ April 19, 2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -5219,35 +5309,26 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DD_APP_KEY</span><span class="o">=</span><span class="s2">&quot;your-datadog-app-key&quot;</span>
 </span></code></pre></div></p>
 <p>Add to your config file:
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">toolsets</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="c1"># Enable all Datadog toolsets</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">datadog/logs</span><span class="p">:</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_API_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">app_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_APP_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">api_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://app.datadoghq.com</span><span class="w">  </span><span class="c1"># Change for EU/other regions</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nt">datadog/metrics</span><span class="p">:</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_API_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="nt">app_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_APP_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">      </span><span class="nt">api_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://app.datadoghq.com</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nt">datadog/traces</span><span class="p">:</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_API_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">      </span><span class="nt">app_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_APP_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="nt">api_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://app.datadoghq.com</span>
-</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
-</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">  </span><span class="nt">datadog/general</span><span class="p">:</span>
-</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_API_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">      </span><span class="nt">app_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_APP_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
-</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">      </span><span class="nt">api_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://app.datadoghq.com</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># anchors: is ignored by Holmes — use it to define reusable YAML blocks</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">anchors</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">dd_config</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;dd_config</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_API_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">app_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">env.DD_APP_KEY</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">api_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://app.datadoghq.com</span><span class="w">  </span><span class="c1"># Change for EU/other regions</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nt">toolsets</span><span class="p">:</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">datadog/general</span><span class="p">:</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="nv">*dd_config</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">datadog/logs</span><span class="p">:</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="nv">*dd_config</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">datadog/metrics</span><span class="p">:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="nv">*dd_config</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="nt">datadog/traces</span><span class="p">:</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="nv">*dd_config</span>
 </span></code></pre></div></p>
 </div>
 <div class="tabbed-block">
@@ -5405,13 +5486,13 @@
 <p><strong>Configuration</strong></p>
 <p>
 <div class="tabbed-set" data-tabs="1:3">
-<input checked="checked" id="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9_1" name="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9" type="radio">
-<input id="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9_2" name="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9" type="radio">
-<input id="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9_3" name="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9" type="radio">
+<input checked="checked" id="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21_1" name="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21" type="radio">
+<input id="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21_2" name="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21" type="radio">
+<input id="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21_3" name="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21" type="radio">
 <div class="tabbed-labels">
-<label for="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9_1">Holmes CLI</label>
-<label for="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9_2">Holmes Helm Chart</label>
-<label for="__tabbed_58849efb_f3c2_46f7_a693_3bb01533dac9_3">Robusta Helm Chart</label>
+<label for="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21_1">Holmes CLI</label>
+<label for="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21_2">Holmes Helm Chart</label>
+<label for="__tabbed_8a1e0254_a084_4706_b5c4_e91056a15c21_3">Robusta Helm Chart</label>
 </div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5506,13 +5587,13 @@
 <p><strong>Configuration</strong></p>
 <p>
 <div class="tabbed-set" data-tabs="1:3">
-<input checked="checked" id="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0_1" name="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0" type="radio">
-<input id="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0_2" name="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0" type="radio">
-<input id="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0_3" name="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0" type="radio">
+<input checked="checked" id="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094_1" name="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094" type="radio">
+<input id="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094_2" name="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094" type="radio">
+<input id="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094_3" name="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094" type="radio">
 <div class="tabbed-labels">
-<label for="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0_1">Holmes CLI</label>
-<label for="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0_2">Holmes Helm Chart</label>
-<label for="__tabbed_84ec2306_a3fd_4128_8fe6_3548f94dacc0_3">Robusta Helm Chart</label>
+<label for="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094_1">Holmes CLI</label>
+<label for="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094_2">Holmes Helm Chart</label>
+<label for="__tabbed_b2ee2ea4_497b_4f5b_8b78_e66f20a90094_3">Robusta Helm Chart</label>
 </div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5606,13 +5687,13 @@
 <p><strong>Configuration</strong></p>
 <p>
 <div class="tabbed-set" data-tabs="1:3">
-<input checked="checked" id="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8_1" name="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8" type="radio">
-<input id="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8_2" name="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8" type="radio">
-<input id="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8_3" name="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8" type="radio">
+<input checked="checked" id="__tabbed_765bee13_993d_4691_84e5_99055f599fc7_1" name="__tabbed_765bee13_993d_4691_84e5_99055f599fc7" type="radio">
+<input id="__tabbed_765bee13_993d_4691_84e5_99055f599fc7_2" name="__tabbed_765bee13_993d_4691_84e5_99055f599fc7" type="radio">
+<input id="__tabbed_765bee13_993d_4691_84e5_99055f599fc7_3" name="__tabbed_765bee13_993d_4691_84e5_99055f599fc7" type="radio">
 <div class="tabbed-labels">
-<label for="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8_1">Holmes CLI</label>
-<label for="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8_2">Holmes Helm Chart</label>
-<label for="__tabbed_7e26361e_554e_4e25_b245_34510c9e3ca8_3">Robusta Helm Chart</label>
+<label for="__tabbed_765bee13_993d_4691_84e5_99055f599fc7_1">Holmes CLI</label>
+<label for="__tabbed_765bee13_993d_4691_84e5_99055f599fc7_2">Holmes Helm Chart</label>
+<label for="__tabbed_765bee13_993d_4691_84e5_99055f599fc7_3">Robusta Helm Chart</label>
 </div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5689,13 +5770,13 @@
 <p><strong>Configuration</strong></p>
 <p>
 <div class="tabbed-set" data-tabs="1:3">
-<input checked="checked" id="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0_1" name="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0" type="radio">
-<input id="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0_2" name="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0" type="radio">
-<input id="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0_3" name="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0" type="radio">
+<input checked="checked" id="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178_1" name="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178" type="radio">
+<input id="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178_2" name="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178" type="radio">
+<input id="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178_3" name="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178" type="radio">
 <div class="tabbed-labels">
-<label for="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0_1">Holmes CLI</label>
-<label for="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0_2">Holmes Helm Chart</label>
-<label for="__tabbed_c1b65173_1466_4a19_8823_0614e9fde4a0_3">Robusta Helm Chart</label>
+<label for="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178_1">Holmes CLI</label>
+<label for="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178_2">Holmes Helm Chart</label>
+<label for="__tabbed_7b57e969_649a_460f_af9c_cb3e72b10178_3">Robusta Helm Chart</label>
 </div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5841,7 +5922,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../coralogix-logs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Coralogix">
+          <a href="../crossplane/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Crossplane">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -5851,7 +5932,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Coralogix
+                Crossplane
               </div>
             </div>
           </a>
