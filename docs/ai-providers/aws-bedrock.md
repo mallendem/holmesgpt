@@ -60,6 +60,9 @@ Configure HolmesGPT to use AWS Bedrock foundation models.
           secretKeyRef:
             name: holmes-secrets
             key: aws-secret-access-key
+      # Optional: Set default model (use modelList key name)
+      - name: MODEL
+        value: "bedrock-claude-sonnet-4"  # This refers to the key name in modelList below
 
     # Configure at least one model using modelList
     modelList:
@@ -86,10 +89,6 @@ Configure HolmesGPT to use AWS Bedrock foundation models.
           anthropic-beta: context-1m-2025-08-07
         custom_args:
           max_context_size: 1000000
-
-    # Optional: Set default model (use modelList key name)
-    config:
-      model: "bedrock-claude-sonnet-4"  # This refers to the key name in modelList above
     ```
 
 === "Robusta Helm Chart"
@@ -117,6 +116,9 @@ Configure HolmesGPT to use AWS Bedrock foundation models.
             secretKeyRef:
               name: robusta-holmes-secret
               key: aws-secret-access-key
+        # Optional: Set default model (use modelList key name)
+        - name: MODEL
+          value: "bedrock-claude-sonnet-4"  # This refers to the key name in modelList below
 
       # Configure at least one model using modelList
       modelList:
@@ -143,10 +145,6 @@ Configure HolmesGPT to use AWS Bedrock foundation models.
             anthropic-beta: context-1m-2025-08-07
           custom_args:
             max_context_size: 1000000
-
-      # Optional: Set default model (use modelList key name)
-      config:
-        model: "bedrock-claude-sonnet-4"  # This refers to the key name in modelList above
     ```
 
 ### Using Claude Sonnet with 1M Context Window
@@ -198,9 +196,10 @@ If you're running HolmesGPT on Kubernetes with IRSA, you can authenticate withou
           budget_tokens: 10000
           type: enabled
 
-    # Optional: Set default model (use modelList key name)
-    config:
-      model: "bedrock-claude-sonnet-4"
+    additionalEnvVars:
+      # Optional: Set default model (use modelList key name)
+      - name: MODEL
+        value: "bedrock-claude-sonnet-4"
     ```
 
 === "Robusta Helm Chart"
@@ -223,9 +222,10 @@ If you're running HolmesGPT on Kubernetes with IRSA, you can authenticate withou
             budget_tokens: 10000
             type: enabled
 
-      # Optional: Set default model (use modelList key name)
-      config:
-        model: "bedrock-claude-sonnet-4"
+      additionalEnvVars:
+        # Optional: Set default model (use modelList key name)
+        - name: MODEL
+          value: "bedrock-claude-sonnet-4"
     ```
 
 **Note:** With IRSA, you do not need `AWS_ACCESS_KEY_ID` or `AWS_SECRET_ACCESS_KEY`. The AWS SDK picks up the injected token automatically.
@@ -281,25 +281,7 @@ For the CLI:
 export EXTRA_HEADERS="{\"anthropic-beta\": \"context-1m-2025-08-07\"}"
 ```
 
-Or, for Helm:
-
-    # values.yaml
-    holmes:
-      ...
-      modelList:
-        ...
-        bedrock-claude-sonnet-4-1M-context:
-          aws_access_key_id: "{{ env.AWS_ACCESS_KEY_ID }}"
-          aws_secret_access_key: "{{ env.AWS_SECRET_ACCESS_KEY }}"
-          aws_region_name: eu-south-2
-          model: bedrock/eu.anthropic.claude-sonnet-4-20250514-v1:0
-          temperature: 1
-          thinking:
-            budget_tokens: 10000
-            type: enabled
-          extra_headers:
-            anthropic-beta: context-1m-2025-08-07
-
+For the Helm charts, set `extra_headers` on the model's `modelList` entry, as the `bedrock-claude-sonnet-4-1M-context` entry in the Holmes Helm Chart and Robusta Helm Chart tabs above does.
 
 ## Additional Resources
 

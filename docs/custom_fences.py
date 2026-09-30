@@ -13,6 +13,7 @@ import re
 import uuid
 
 import yaml  # type: ignore
+from pymdownx.superfences import SuperFencesException
 
 ROBUSTA_REGIONS = (("US", ""), ("EU", "eu"), ("AP", "ap"))
 ROBUSTA_DOMAIN_RE = re.compile(r"\b(api|platform|sp)\.robusta\.dev\b")
@@ -70,7 +71,7 @@ def toolset_config_fence_format(source, language, css_class, options, md, **kwar
 <p>When using the <strong>standalone Holmes Helm Chart</strong>, update your <code>values.yaml</code>:</p>
 <pre><code class="language-yaml">{escaped_source}</code></pre>
 <p>Apply the configuration:</p>
-<pre><code class="language-bash">helm upgrade holmes holmes/holmes --values=values.yaml</code></pre>
+<pre><code class="language-bash">helm upgrade holmes robusta/holmes --values=values.yaml</code></pre>
 </div>
 <div class="tabbed-block">
 <p>When using the <strong>Robusta Helm Chart</strong> (which includes HolmesGPT), update your <code>generated_values.yaml</code>:</p>
@@ -122,7 +123,7 @@ def helm_tabs_fence_format(source, language, css_class, options, md, **kwargs):
 <p>When using the <strong>standalone Holmes Helm Chart</strong>, update your <code>values.yaml</code>:</p>
 <pre><code class="language-yaml">{escaped_source}</code></pre>
 <p>Apply the configuration:</p>
-<pre><code class="language-bash">helm upgrade holmes holmes/holmes --values=values.yaml</code></pre>
+<pre><code class="language-bash">helm upgrade holmes robusta/holmes --values=values.yaml</code></pre>
 </div>
 <div class="tabbed-block">
 <p>When using the <strong>Robusta Helm Chart</strong> (which includes HolmesGPT), update your <code>generated_values.yaml</code> (note: add the <code>holmes:</code> prefix):</p>
@@ -235,6 +236,11 @@ def _reindent(text: str, spaces: int) -> str:
     return "\n".join(pad + ln[base:] if ln.strip() else "" for ln in lines)
 
 
+class MultiInstanceFenceError(SuperFencesException):
+    """Superfences catches any other exception a fence raises and renders the
+    block as plain code; this one fails the build."""
+
+
 def multi_instance_fence_format(source, language, css_class, options, md, **kwargs):
     """Render the standard "Multiple Instances" section for a toolset.
 
@@ -258,14 +264,25 @@ def multi_instance_fence_format(source, language, css_class, options, md, **kwar
     The same component renders identically for every toolset, so each page imports
     it in one fenced block instead of repeating the prose.
     """
-    spec = yaml.safe_load(source) or {}
-    toolset = str(spec.get("toolset", "")).strip()
-    name = str(spec.get("name") or toolset or "this").strip()
-    config = str(spec.get("config", "")).strip()
-    if not toolset or not config:
-        raise ValueError(
-            "multi-instance fence requires 'toolset' and 'config' keys in its YAML body"
+    try:
+        spec = yaml.safe_load(source) or {}
+    except yaml.YAMLError as e:
+        raise MultiInstanceFenceError(
+            f"multi-instance fence body is not valid YAML: {e}"
+        ) from e
+    if not isinstance(spec, dict):
+        raise MultiInstanceFenceError(
+            "multi-instance fence body must be a YAML mapping"
         )
+    toolset, config = spec.get("toolset"), spec.get("config")
+    if not (isinstance(toolset, str) and toolset.strip()) or not (
+        isinstance(config, str) and config.strip()
+    ):
+        raise MultiInstanceFenceError(
+            "multi-instance fence requires 'toolset' and 'config' strings in its YAML body"
+        )
+    toolset, config = toolset.strip(), config.strip()
+    name = str(spec.get("name") or toolset).strip()
 
     # The wrapper names the discovery tool by replacing '/' with '_' in the toolset name.
     list_tool = spec.get("list_tool") or (toolset.replace("/", "_") + "_list_instances")

@@ -20,9 +20,9 @@ This example creates a toolset that helps HolmesGPT view and suggest relevant Gr
     toolsets:
       grafana:
         description: "View and suggest Grafana dashboards"
-        prerequisites: "Grafana instance accessible from HolmesGPT"
-        tags: [monitoring, observability]
-        installation: |
+        prerequisites:
+          - env: [GRAFANA_URL, GRAFANA_TOKEN]
+        installation_instructions: |
           1. Ensure Grafana is accessible from HolmesGPT
           2. Configure Grafana API credentials if authentication is required
         tools:
@@ -59,37 +59,51 @@ This example creates a toolset that helps HolmesGPT view and suggest relevant Gr
 
 === "Robusta Helm Chart"
 
+    **Create Kubernetes Secret:**
+
+    ```bash
+    kubectl create secret generic grafana-credentials \
+      --from-literal=url="http://grafana.monitoring.svc.cluster.local:3000" \
+      --from-literal=token="your-grafana-api-token" \
+      -n <namespace>
+    ```
+
     **Helm Values:**
 
     ```yaml
     holmes:
-      customToolsets:
+      additionalEnvVars:
+        - name: GRAFANA_URL
+          valueFrom:
+            secretKeyRef:
+              name: grafana-credentials
+              key: url
+        - name: GRAFANA_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: grafana-credentials
+              key: token
+
+      toolsets:
         grafana:
           description: "View and suggest Grafana dashboards"
-          prerequisites: "Grafana instance accessible from HolmesGPT"
-          tags: [monitoring, observability]
-          installation: |
+          prerequisites:
+            - env: [GRAFANA_URL, GRAFANA_TOKEN]
+          installation_instructions: |
             1. Ensure Grafana is accessible from HolmesGPT
             2. Configure Grafana API credentials if authentication is required
           tools:
             - name: view_dashboard
               description: "View a specific Grafana dashboard by ID or name"
               command: |
-                curl -s "{{ grafana_url }}/api/dashboards/uid/{{ dashboard_uid }}" \
-                  -H "Authorization: Bearer {{ grafana_token }}"
+                curl -s "${GRAFANA_URL}/api/dashboards/uid/{{ dashboard_uid }}" \
+                  -H "Authorization: Bearer ${GRAFANA_TOKEN}"
 
             - name: search_dashboards
               description: "Search for dashboards related to specific keywords"
               command: |
-                curl -s "{{ grafana_url }}/api/search?query={{ search_query }}" \
-                  -H "Authorization: Bearer {{ grafana_token }}"
-    ```
-
-    **Environment Variables:**
-
-    ```bash
-    export GRAFANA_URL="http://grafana.monitoring.svc.cluster.local:3000"
-    export GRAFANA_TOKEN="your-grafana-api-token"
+                curl -s "${GRAFANA_URL}/api/search?query={{ search_query }}" \
+                  -H "Authorization: Bearer ${GRAFANA_TOKEN}"
     ```
 
     **Helm Upgrade:**
@@ -110,9 +124,9 @@ This example creates a toolset with advanced diagnostic tools for Kubernetes clu
     toolsets:
       k8s-diagnostics:
         description: "Advanced Kubernetes diagnostic tools"
-        prerequisites: "kubectl access to the cluster"
-        tags: [kubernetes, diagnostics]
-        installation: |
+        prerequisites:
+          - command: "kubectl get nodes"
+        installation_instructions: |
           1. Ensure kubectl is configured with cluster access
           2. Verify necessary RBAC permissions are in place
         tools:
@@ -154,12 +168,12 @@ This example creates a toolset with advanced diagnostic tools for Kubernetes clu
 
     ```yaml
     holmes:
-      customToolsets:
+      toolsets:
         k8s-diagnostics:
           description: "Advanced Kubernetes diagnostic tools"
-          prerequisites: "kubectl access to the cluster"
-          tags: [kubernetes, diagnostics]
-          installation: |
+          prerequisites:
+            - command: "kubectl get nodes"
+          installation_instructions: |
             1. Ensure kubectl is configured with cluster access
             2. Verify necessary RBAC permissions are in place
           tools:
@@ -202,9 +216,9 @@ This example shows how to create a toolset for fetching information from GitHub 
     toolsets:
       github:
         description: "Fetch information from GitHub repositories"
-        prerequisites: "GitHub API token with repository access"
-        tags: [source-control, github]
-        installation: |
+        prerequisites:
+          - env: [GITHUB_TOKEN]
+        installation_instructions: |
           1. Create a GitHub personal access token
           2. Set the token as an environment variable
           3. Ensure network access to GitHub API
@@ -247,16 +261,31 @@ This example shows how to create a toolset for fetching information from GitHub 
 
 === "Robusta Helm Chart"
 
+    **Create Kubernetes Secret:**
+
+    ```bash
+    kubectl create secret generic github-credentials \
+      --from-literal=token="your-github-personal-access-token" \
+      -n <namespace>
+    ```
+
     **Helm Values:**
 
     ```yaml
     holmes:
-      customToolsets:
+      additionalEnvVars:
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-credentials
+              key: token
+
+      toolsets:
         github:
           description: "Fetch information from GitHub repositories"
-          prerequisites: "GitHub API token with repository access"
-          tags: [source-control, github]
-          installation: |
+          prerequisites:
+            - env: [GITHUB_TOKEN]
+          installation_instructions: |
             1. Create a GitHub personal access token
             2. Set the token as an environment variable
             3. Ensure network access to GitHub API
@@ -264,26 +293,20 @@ This example shows how to create a toolset for fetching information from GitHub 
             - name: get_repository_info
               description: "Get information about a GitHub repository"
               command: |
-                curl -s -H "Authorization: token {{ github_token }}" \
+                curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
                   "https://api.github.com/repos/{{ owner }}/{{ repo }}"
 
             - name: get_recent_commits
               description: "Get recent commits from a repository"
               command: |
-                curl -s -H "Authorization: token {{ github_token }}" \
+                curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
                   "https://api.github.com/repos/{{ owner }}/{{ repo }}/commits?per_page={{ limit | default(10) }}"
 
             - name: search_issues
               description: "Search for issues in a repository"
               command: |
-                curl -s -H "Authorization: token {{ github_token }}" \
+                curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
                   "https://api.github.com/search/issues?q=repo:{{ owner }}/{{ repo }}+{{ search_query }}"
-    ```
-
-    **Environment Variables:**
-
-    ```bash
-    export GITHUB_TOKEN="your-github-personal-access-token"
     ```
 
     **Helm Upgrade:**
@@ -302,9 +325,11 @@ A custom toolset consists of the following components:
 toolsets:
   <toolset-name>:
     description: "Human-readable description"
-    prerequisites: "What needs to be installed/configured"
-    tags: [tag1, tag2]  # Optional: for categorization
-    installation: |
+    prerequisites:  # Optional: checks that must pass for the toolset to be enabled
+      - env: [API_TOKEN]  # these environment variables are set
+      - command: "curl --version"  # this command exits with status 0
+    tags: [core]  # Optional: where the toolset loads, see Tags below
+    installation_instructions: |
       Multi-line installation instructions
     tools:
       - name: tool_name
@@ -312,7 +337,7 @@ toolsets:
         command: |
           Command or script to execute
         parameters:  # Optional: can be inferred by LLM
-          - name: param_name
+          param_name:
             description: "Parameter description"
 ```
 
@@ -336,13 +361,11 @@ HolmesGPT supports two types of variables in commands:
 
 ### Tags
 
-Optional tags help categorize toolsets:
+Optional tags decide where a toolset loads. A toolset without tags is `core`.
 
-- **core**: Essential system tools
-- **cluster**: Cluster-specific tools
-- **monitoring**: Observability tools
-- **networking**: Network-related tools
-- **storage**: Storage-related tools
+- **core**: the CLI and the Holmes server
+- **cli**: the CLI only
+- **cluster**: the Holmes server only
 
 ## Advanced: Adding Custom Binaries
 
@@ -350,14 +373,15 @@ If your custom toolset requires additional binaries not available in the base Ho
 
 ### Create a Custom Dockerfile
 
+Start from the Holmes image your Robusta release runs: replace `<holmes-tag>` in the `FROM` line below with its tag. `helm get manifest robusta | grep 'image: .*/holmes:'` prints it. The Robusta chart bundles its own version of the Holmes chart, so read the image from your release rather than from the Holmes chart. The image is based on Alpine Linux, so install packages with `apk`.
+
 ```dockerfile
-FROM us-central1-docker.pkg.dev/genuine-flight-317411/devel/holmes:latest
+FROM robustadev/holmes:<holmes-tag>
 
 # Install additional tools
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     your-custom-tool \
-    another-binary \
-    && rm -rf /var/lib/apt/lists/*
+    another-binary
 
 # Copy custom scripts
 COPY scripts/ /usr/local/bin/
@@ -377,10 +401,9 @@ docker push your-registry/holmes-custom:latest
 
 ```yaml
 holmes:
-  image:
-    repository: your-registry/holmes-custom
-    tag: latest
-  customToolsets:
+  registry: your-registry
+  image: holmes-custom:latest
+  toolsets:
     # Your custom toolset configuration
 ```
 
